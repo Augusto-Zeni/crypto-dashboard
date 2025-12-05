@@ -1,7 +1,12 @@
+import { ThemeToggle } from './components/ThemeToggle'
+
 function App() {
   return (
-    <div>
-      <h1>Crypto Dashboard</h1>
+    <div className="min-h-screen bg-background text-foreground">
+      <ThemeToggle />
+      <div className="container mx-auto p-8 space-y-6">
+        <h1 className="text-4xl font-bold text-primary">Crypto Dashboard</h1>
+      </div>
     </div>
   )
 }
