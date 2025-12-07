@@ -6,7 +6,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="fixed top-4 right-4 p-3 rounded-lg bg-secondary hover:bg-accent transition-colors duration-200 shadow-lg"
+      className="p-3 rounded-lg bg-secondary hover:bg-accent transition-colors duration-200 cursor-pointer"
       aria-label={`Alternar para tema ${theme === 'light' ? 'escuro' : 'claro'}`}
     >
       {theme === 'light' ? (
