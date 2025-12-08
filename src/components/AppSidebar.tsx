@@ -19,6 +19,7 @@ import {
   ArrowLeftRight,
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { CurrencySelector } from '@/components/CurrencySelector'
 import { Link, useLocation } from 'react-router-dom'
 
 const menuItems = [
@@ -89,7 +90,8 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col gap-2 p-2">
+          <CurrencySelector />
           <ThemeToggle />
         </div>
       </SidebarFooter>

@@ -1,8 +1,9 @@
-import { memo } from 'react'
 import { List, type RowComponentProps } from 'react-window'
 import type { CryptoCurrency } from '@/types/crypto'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { useCurrency } from '@/hooks/useCurrency'
+import { formatLargeNumber, formatPrice } from '@/lib/utils'
 
 interface CryptoListProps {
   cryptos: CryptoCurrency[]
@@ -10,9 +11,10 @@ interface CryptoListProps {
 
 interface CryptoRowData {
   cryptos: CryptoCurrency[]
+  currencyCode: string
 }
 
-function CryptoRow({ index, style, cryptos }: RowComponentProps<CryptoRowData>) {
+function CryptoRow({ index, style, cryptos, currencyCode }: RowComponentProps<CryptoRowData>) {
   const crypto = cryptos[index]
   const priceChange = crypto.price_change_percentage_24h
   const isPositive = priceChange >= 0
@@ -46,10 +48,7 @@ function CryptoRow({ index, style, cryptos }: RowComponentProps<CryptoRowData>) 
 
               <div className="text-right shrink-0">
                 <p className="font-semibold text-lg">
-                  ${crypto.current_price.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,
-                  })}
+                  {formatPrice(crypto.current_price, currencyCode)}
                 </p>
                 <Badge
                   variant={isPositive ? 'default' : 'destructive'}
@@ -63,14 +62,14 @@ function CryptoRow({ index, style, cryptos }: RowComponentProps<CryptoRowData>) 
               <div className="text-right shrink-0 min-w-[150px]">
                 <p className="text-sm text-muted-foreground">Market Cap</p>
                 <p className="font-medium">
-                  ${(crypto.market_cap / 1e9).toFixed(2)}B
+                  {formatLargeNumber(crypto.market_cap, currencyCode)}
                 </p>
               </div>
 
               <div className="text-right shrink-0 min-w-[150px]">
                 <p className="text-sm text-muted-foreground">24h Volume</p>
                 <p className="font-medium">
-                  ${(crypto.total_volume / 1e9).toFixed(2)}B
+                  {formatLargeNumber(crypto.total_volume, currencyCode)}
                 </p>
               </div>
             </div>
@@ -81,14 +80,16 @@ function CryptoRow({ index, style, cryptos }: RowComponentProps<CryptoRowData>) 
   )
 }
 
-export const CryptoList = memo(({ cryptos }: CryptoListProps) => (
-  <List<CryptoRowData>
-    defaultHeight={600}
-    rowCount={cryptos.length}
-    rowHeight={100}
-    rowComponent={CryptoRow}
-    rowProps={{ cryptos }}
-  />
-))
+export function CryptoList({ cryptos }: CryptoListProps) {
+  const { currency } = useCurrency()
 
-CryptoList.displayName = 'CryptoList'
+  return (
+    <List<CryptoRowData>
+      defaultHeight={600}
+      rowCount={cryptos.length}
+      rowHeight={100}
+      rowComponent={CryptoRow}
+      rowProps={{ cryptos, currencyCode: currency }}
+    />
+  )
+}

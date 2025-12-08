@@ -1,10 +1,11 @@
 import type { CryptoCurrency } from '@/types/crypto'
+import type { Currency } from '@/hooks/useCurrency'
 
 const BASE_URL = 'https://api.coingecko.com/api/v3'
 const PER_PAGE = 250
 
 export const coingeckoApi = {
-  async getAllCoins(): Promise<CryptoCurrency[]> {
+  async getAllCoins(currency: Currency = 'usd'): Promise<CryptoCurrency[]> {
     const allCoins: CryptoCurrency[] = []
     let page = 1
     let hasMore = true
@@ -14,7 +15,7 @@ export const coingeckoApi = {
     while (hasMore && callCount < maxCalls) {
       try {
         const response = await fetch(
-          `${BASE_URL}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${PER_PAGE}&page=${page}&sparkline=false&locale=en`,
+          `${BASE_URL}/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${PER_PAGE}&page=${page}&sparkline=false&locale=en`,
         )
 
         callCount++
