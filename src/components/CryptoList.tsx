@@ -1,4 +1,5 @@
 import { List, type RowComponentProps } from 'react-window'
+import { useNavigate } from 'react-router-dom'
 import type { CryptoCurrency } from '@/types/crypto'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -12,16 +13,25 @@ interface CryptoListProps {
 interface CryptoRowData {
   cryptos: CryptoCurrency[]
   currencyCode: string
+  onCryptoClick: (cryptoId: string) => void
 }
 
-function CryptoRow({ index, style, cryptos, currencyCode }: RowComponentProps<CryptoRowData>) {
+function CryptoRow({
+  index,
+  style,
+  cryptos,
+  currencyCode,
+  onCryptoClick }: RowComponentProps<CryptoRowData>) {
   const crypto = cryptos[index]
   const priceChange = crypto.price_change_percentage_24h
   const isPositive = priceChange >= 0
 
   return (
     <div style={style}>
-      <Card className="h-[90px] hover:bg-accent/50 transition-colors">
+      <Card
+        className="h-[90px] hover:bg-accent/50 transition-colors cursor-pointer"
+        onClick={() => onCryptoClick(crypto.id)}
+      >
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1">
@@ -82,6 +92,11 @@ function CryptoRow({ index, style, cryptos, currencyCode }: RowComponentProps<Cr
 
 export function CryptoList({ cryptos }: CryptoListProps) {
   const { currency } = useCurrency()
+  const navigate = useNavigate()
+
+  const handleCryptoClick = (cryptoId: string) => {
+    navigate(`/moeda/${cryptoId}`)
+  }
 
   return (
     <List<CryptoRowData>
@@ -89,7 +104,7 @@ export function CryptoList({ cryptos }: CryptoListProps) {
       rowCount={cryptos.length}
       rowHeight={100}
       rowComponent={CryptoRow}
-      rowProps={{ cryptos, currencyCode: currency }}
+      rowProps={{ cryptos, currencyCode: currency, onCryptoClick: handleCryptoClick }}
     />
   )
 }

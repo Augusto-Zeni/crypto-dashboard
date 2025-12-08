@@ -1,4 +1,4 @@
-import type { CryptoCurrency } from '@/types/crypto'
+import type { CryptoCurrency, CoinDetails, MarketChartData } from '@/types/crypto'
 import type { Currency } from '@/hooks/useCurrency'
 
 const BASE_URL = 'https://api.coingecko.com/api/v3'
@@ -63,5 +63,33 @@ export const coingeckoApi = {
 
     // Sempre retorna algo, mesmo que vazio
     return allCoins
+  },
+
+  async getCoinDetails(coinId: string): Promise<CoinDetails> {
+    const response = await fetch(
+      `${BASE_URL}/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`,
+    )
+
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar detalhes da moeda: ${response.status}`)
+    }
+
+    return response.json()
+  },
+
+  async getMarketChart(
+    coinId: string,
+    currency: Currency = 'usd',
+    days: number = 7,
+  ): Promise<MarketChartData> {
+    const response = await fetch(
+      `${BASE_URL}/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`,
+    )
+
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar histórico de preços: ${response.status}`)
+    }
+
+    return response.json()
   },
 }

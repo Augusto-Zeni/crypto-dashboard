@@ -14,6 +14,9 @@ export function AppRoutes() {
       <Route path="/detalhes-moeda" element={<Layout title="Detalhes da Moeda" />}>
         <Route index element={<CoinDetails />} />
       </Route>
+      <Route path="/moeda/:coinId" element={<Layout title="Detalhes da Moeda" />}>
+        <Route index element={<CoinDetails />} />
+      </Route>
       <Route path="/portfolio" element={<Layout title="Portfólio" />}>
         <Route index element={<Portfolio />} />
       </Route>
