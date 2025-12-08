@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { formatLargeNumber, formatPrice } from '@/lib/utils'
 import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react'
 import { CoinSelector } from '@/components/CoinSelector'
+import { PriceChart } from '@/components/PriceChart'
 
 export function CoinDetails() {
   const { coinId } = useParams<{ coinId: string }>()
@@ -312,12 +313,7 @@ export function CoinDetails() {
                   </p>
                 </div>
               </div>
-              <div className="text-center py-20 text-muted-foreground">
-                <p>Gráfico de preços será implementado em breve</p>
-                <p className="text-sm mt-2">
-                  Dados disponíveis: {chartData.prices.length} pontos
-                </p>
-              </div>
+              <PriceChart data={chartData.prices} currency={currency} />
             </div>
           ) : (
             <div className="flex h-[300px] items-center justify-center">
@@ -326,6 +322,42 @@ export function CoinDetails() {
           )}
         </CardContent>
       </Card>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Market Cap</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoadingChart ? (
+              <Skeleton className="h-[300px]" />
+            ) : chartData && chartData.market_caps.length > 0 ? (
+              <PriceChart data={chartData.market_caps} currency={currency} formatValue={formatLargeNumber} />
+            ) : (
+              <div className="flex h-[300px] items-center justify-center">
+                <p className="text-muted-foreground">Sem dados disponíveis</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Volume de Negociação</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoadingChart ? (
+              <Skeleton className="h-[300px]" />
+            ) : chartData && chartData.total_volumes.length > 0 ? (
+              <PriceChart data={chartData.total_volumes} currency={currency} formatValue={formatLargeNumber} />
+            ) : (
+              <div className="flex h-[300px] items-center justify-center">
+                <p className="text-muted-foreground">Sem dados disponíveis</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {coinDetails.description.en && (
         <Card>
